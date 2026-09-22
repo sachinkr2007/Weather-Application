@@ -39,8 +39,12 @@ const DOM = {
     favoritesDrawer: document.getElementById('favoritesDrawer'),
     drawerBackdrop: document.getElementById('drawerBackdrop'),
     closeDrawerBtn: document.getElementById('closeDrawerBtn'),
+    drawerHandle: document.getElementById('drawerHandle'),
     favoritesList: document.getElementById('favoritesList'),
     favoriteCount: document.getElementById('favoriteCount'),
+    mobileNavFavBadge: document.getElementById('mobileNavFavBadge'),
+    mobileBottomNav: document.getElementById('mobileBottomNav'),
+    mobileNavBtns: document.querySelectorAll('.mobile-nav-btn'),
     toggleFavoriteCityBtn: document.getElementById('toggleFavoriteCityBtn'),
     favoriteStarIcon: document.getElementById('favoriteStarIcon'),
     soundToggleBtn: document.getElementById('soundToggleBtn'),
@@ -117,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateFavoriteBadge();
     bindEvents();
     syncUnitButtons();
+    initScrollSpy();
 
     // Fetch initial weather for default city (Sasaram or last searched)
     fetchWeatherByCity(state.currentCity);
@@ -221,6 +226,35 @@ function bindEvents() {
     DOM.closeDrawerBtn.addEventListener('click', closeFavoritesDrawer);
     DOM.drawerBackdrop.addEventListener('click', closeFavoritesDrawer);
 
+    // Mobile Bottom Sheet Touch Swipe Down to close
+    initDrawerTouchGestures();
+
+    // Mobile Bottom Navigation Dock Handlers
+    DOM.mobileNavBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.dataset.target;
+            if (!targetId || btn.id === 'navBtnFavorites') {
+                openFavoritesDrawer();
+                return;
+            }
+
+            DOM.mobileNavBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const targetEl = document.getElementById(targetId);
+            if (targetEl) {
+                const headerOffset = 70;
+                const elementPosition = targetEl.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: targetId === 'heroCard' ? 0 : offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
     // Refresh
     DOM.refreshBtn.addEventListener('click', () => {
         DOM.refreshIcon.classList.add('fa-spin');
@@ -235,7 +269,75 @@ function bindEvents() {
 
     window.addEventListener('resize', () => {
         resizeCanvas();
-        if (state.forecastData) renderHourlyChart(state.forecastData);
+        if (state.currentWeather && state.currentWeather.hourly) {
+            renderHourlyChartFromMeteo(state.currentWeather.hourly);
+        }
+    });
+}
+
+function initDrawerTouchGestures() {
+    let startY = 0;
+    let currentY = 0;
+    const drawer = DOM.favoritesDrawer;
+
+    drawer.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    drawer.addEventListener('touchmove', (e) => {
+        currentY = e.touches[0].clientY;
+        const diffY = currentY - startY;
+        if (diffY > 0 && drawer.scrollTop <= 0) {
+            drawer.style.transform = `translateY(${diffY}px)`;
+        }
+    }, { passive: true });
+
+    drawer.addEventListener('touchend', () => {
+        const diffY = currentY - startY;
+        if (diffY > 80 && drawer.scrollTop <= 0) {
+            drawer.style.transform = '';
+            closeFavoritesDrawer();
+        } else {
+            drawer.style.transform = '';
+        }
+        startY = 0;
+        currentY = 0;
+    });
+}
+
+function initScrollSpy() {
+    const sections = [
+        { id: 'heroCard', btnId: 'navBtnToday' },
+        { id: 'hourlySection', btnId: 'navBtnHourly' },
+        { id: 'forecastSection', btnId: 'navBtnForecast' },
+        { id: 'metricsSection', btnId: 'navBtnMetrics' }
+    ];
+
+    let isScrolling = false;
+    window.addEventListener('scroll', () => {
+        if (isScrolling) return;
+        isScrolling = true;
+        requestAnimationFrame(() => {
+            const scrollPos = window.scrollY + 180;
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const el = document.getElementById(sections[i].id);
+                if (el && el.offsetTop <= scrollPos) {
+                    DOM.mobileNavBtns.forEach(b => {
+                        if (b.id !== 'navBtnFavorites') b.classList.remove('active');
+                    });
+                    const activeBtn = document.getElementById(sections[i].btnId);
+                    if (activeBtn) activeBtn.classList.add('active');
+                    break;
+                }
+            }
+            isScrolling = false;
+        });
+    }, { passive: true });
+}
+
+function syncUnitButtons() {
+    DOM.unitBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.unit === state.units);
     });
 }
 
@@ -1045,7 +1147,8 @@ function startParticleLoop() {
    ============================================================================== */
 
 function updateFavoriteBadge() {
-    DOM.favoriteCount.textContent = state.favorites.length;
+    if (DOM.favoriteCount) DOM.favoriteCount.textContent = state.favorites.length;
+    if (DOM.mobileNavFavBadge) DOM.mobileNavFavBadge.textContent = state.favorites.length;
 }
 
 function updateFavoriteStar() {

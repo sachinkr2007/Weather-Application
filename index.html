@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0f1d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="Professional Real-Time Weather Forecast & Dashboard with Hourly Trends, 5-Day Forecast, Air Quality Index, UV Index, and Dynamic Weather Effects.">
-    <title>Atmosphere | Next-Gen Weather Dashboard</title>
+    <title>Atmosphere | Next-Gen Weather Intelligence</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,7 +29,7 @@
     <div class="app-container">
         
         <!-- Top Navigation & Controls Bar -->
-        <header class="top-nav">
+        <header class="top-nav" id="topNav">
             <div class="brand-section">
                 <div class="brand-logo">
                     <i class="fa-solid fa-cloud-bolt brand-icon"></i>
@@ -114,13 +117,13 @@
                         <div class="location-header">
                             <div class="location-title-row">
                                 <i class="fa-solid fa-location-dot location-pin"></i>
-                                <h2 class="city-name" id="cityName">New Delhi</h2>
-                                <span class="country-tag" id="countryTag">IN</span>
+                                <h2 class="city-name" id="cityName">Sasaram</h2>
+                                <span class="country-tag" id="countryTag">Bihar, IN</span>
                                 <button class="fav-toggle-btn" id="toggleFavoriteCityBtn" title="Pin / Save this city">
                                     <i class="fa-regular fa-star" id="favoriteStarIcon"></i>
                                 </button>
                             </div>
-                            <p class="current-datetime" id="currentDateTime">Tuesday, 22 Sep 2026 • 16:30</p>
+                            <p class="current-datetime" id="currentDateTime">Live Weather Update</p>
                         </div>
                         <div class="weather-condition-pill" id="weatherPill">
                             <span class="pulse-dot"></span>
@@ -130,12 +133,12 @@
 
                     <div class="hero-main-row">
                         <div class="temp-display-wrap">
-                            <div class="main-temp-val" id="mainTemp">28°</div>
+                            <div class="main-temp-val" id="mainTemp">--°</div>
                             <div class="temp-sub-info">
-                                <span class="feels-like" id="feelsLike">Feels like 30°</span>
+                                <span class="feels-like" id="feelsLike">Feels like --°</span>
                                 <div class="high-low-range">
-                                    <span class="high-temp"><i class="fa-solid fa-arrow-up"></i> <span id="highTemp">32°</span></span>
-                                    <span class="low-temp"><i class="fa-solid fa-arrow-down"></i> <span id="lowTemp">23°</span></span>
+                                    <span class="high-temp"><i class="fa-solid fa-arrow-up"></i> <span id="highTemp">--°</span></span>
+                                    <span class="low-temp"><i class="fa-solid fa-arrow-down"></i> <span id="lowTemp">--°</span></span>
                                 </div>
                             </div>
                         </div>
@@ -144,7 +147,7 @@
                             <div class="weather-3d-icon-box" id="heroWeatherIconBox">
                                 <i class="fa-solid fa-sun weather-hero-icon" id="heroWeatherIcon"></i>
                             </div>
-                            <span class="condition-description" id="weatherDescription">Scattered Clouds</span>
+                            <span class="condition-description" id="weatherDescription">Loading conditions...</span>
                         </div>
                     </div>
 
@@ -154,7 +157,7 @@
                             <i class="fa-solid fa-droplet"></i>
                             <div>
                                 <span class="ribbon-label">Humidity</span>
-                                <span class="ribbon-val" id="ribbonHumidity">58%</span>
+                                <span class="ribbon-val" id="ribbonHumidity">--%</span>
                             </div>
                         </div>
                         <div class="ribbon-divider"></div>
@@ -162,7 +165,7 @@
                             <i class="fa-solid fa-wind"></i>
                             <div>
                                 <span class="ribbon-label">Wind</span>
-                                <span class="ribbon-val" id="ribbonWind">14 km/h</span>
+                                <span class="ribbon-val" id="ribbonWind">-- km/h</span>
                             </div>
                         </div>
                         <div class="ribbon-divider"></div>
@@ -170,7 +173,7 @@
                             <i class="fa-solid fa-eye"></i>
                             <div>
                                 <span class="ribbon-label">Visibility</span>
-                                <span class="ribbon-val" id="ribbonVisibility">10 km</span>
+                                <span class="ribbon-val" id="ribbonVisibility">-- km</span>
                             </div>
                         </div>
                         <div class="ribbon-divider"></div>
@@ -178,7 +181,7 @@
                             <i class="fa-solid fa-gauge-high"></i>
                             <div>
                                 <span class="ribbon-label">Pressure</span>
-                                <span class="ribbon-val" id="ribbonPressure">1012 hPa</span>
+                                <span class="ribbon-val" id="ribbonPressure">-- hPa</span>
                             </div>
                         </div>
                     </div>
@@ -186,12 +189,12 @@
                     <!-- Smart Weather Advice Banner -->
                     <div class="weather-smart-banner" id="smartAdviceBanner">
                         <i class="fa-solid fa-wand-magic-sparkles banner-sparkle"></i>
-                        <span id="smartAdviceText">Clear skies ahead! Ideal conditions for outdoor activities and travel.</span>
+                        <span id="smartAdviceText">Analyzing atmospheric patterns for intelligent recommendations...</span>
                     </div>
                 </div>
 
                 <!-- 24-Hour Hourly Forecast with Interactive Canvas Curve Chart -->
-                <div class="glass-card hourly-forecast-card">
+                <div class="glass-card hourly-forecast-card" id="hourlySection">
                     <div class="card-header">
                         <div class="header-title-box">
                             <i class="fa-solid fa-clock-rotate-left header-icon"></i>
@@ -215,7 +218,7 @@
                 </div>
 
                 <!-- 5-Day Extended Weather Forecast -->
-                <div class="glass-card extended-forecast-card">
+                <div class="glass-card extended-forecast-card" id="forecastSection">
                     <div class="card-header">
                         <div class="header-title-box">
                             <i class="fa-solid fa-calendar-week header-icon"></i>
@@ -232,7 +235,7 @@
             </section>
 
             <!-- Right Column: In-Depth Weather Intelligence Grid -->
-            <section class="grid-right-col">
+            <section class="grid-right-col" id="metricsSection">
                 
                 <!-- Air Quality Index (AQI) Card -->
                 <div class="glass-card metric-card aqi-card">
@@ -241,12 +244,12 @@
                             <i class="fa-solid fa-leaf header-icon aqi-icon"></i>
                             <h3 class="card-title">Air Quality Index</h3>
                         </div>
-                        <span class="status-pill status-good" id="aqiPill">Good (AQI 2)</span>
+                        <span class="status-pill status-good" id="aqiPill">Good</span>
                     </div>
 
                     <div class="aqi-meter-wrap">
                         <div class="aqi-score-box">
-                            <span class="aqi-val" id="aqiNumber">42</span>
+                            <span class="aqi-val" id="aqiNumber">--</span>
                             <span class="aqi-scale">/ 500</span>
                         </div>
                         <div class="aqi-bar-track">
@@ -258,19 +261,19 @@
                     <div class="pollutants-grid">
                         <div class="pollutant-item">
                             <span class="pol-name">PM2.5</span>
-                            <span class="pol-val" id="pm25Val">12.4 <small>µg/m³</small></span>
+                            <span class="pol-val" id="pm25Val">-- <small>µg/m³</small></span>
                         </div>
                         <div class="pollutant-item">
                             <span class="pol-name">PM10</span>
-                            <span class="pol-val" id="pm10Val">24.1 <small>µg/m³</small></span>
+                            <span class="pol-val" id="pm10Val">-- <small>µg/m³</small></span>
                         </div>
                         <div class="pollutant-item">
                             <span class="pol-name">NO₂</span>
-                            <span class="pol-val" id="no2Val">8.5 <small>µg/m³</small></span>
+                            <span class="pol-val" id="no2Val">-- <small>µg/m³</small></span>
                         </div>
                         <div class="pollutant-item">
                             <span class="pol-name">O₃</span>
-                            <span class="pol-val" id="o3Val">35.2 <small>µg/m³</small></span>
+                            <span class="pol-val" id="o3Val">-- <small>µg/m³</small></span>
                         </div>
                     </div>
                 </div>
@@ -287,8 +290,8 @@
 
                     <div class="uv-gauge-wrap">
                         <div class="uv-score-display">
-                            <span class="uv-number" id="uvNumber">4.8</span>
-                            <span class="uv-max">UV Max: 6.2</span>
+                            <span class="uv-number" id="uvNumber">--</span>
+                            <span class="uv-max">UV Max: --</span>
                         </div>
                         <div class="uv-gradient-bar">
                             <div class="uv-pin" id="uvPin" style="left: 45%;"></div>
@@ -320,14 +323,14 @@
                             </div>
                         </div>
                         <div class="wind-info-text">
-                            <div class="wind-speed-large" id="windSpeedBig">14 <small>km/h</small></div>
+                            <div class="wind-speed-large" id="windSpeedBig">-- <small>km/h</small></div>
                             <div class="wind-detail-row">
                                 <span>Direction:</span>
-                                <strong id="windDirectionText">North-East (45°)</strong>
+                                <strong id="windDirectionText">--</strong>
                             </div>
                             <div class="wind-detail-row">
                                 <span>Wind Gusts:</span>
-                                <strong id="windGustText">Up to 22 km/h</strong>
+                                <strong id="windGustText">--</strong>
                             </div>
                         </div>
                     </div>
@@ -340,7 +343,7 @@
                             <i class="fa-solid fa-sun-horizon header-icon sun-icon"></i>
                             <h3 class="card-title">Sun Cycle</h3>
                         </div>
-                        <span class="card-tag" id="daylightHoursText">12h 15m daylight</span>
+                        <span class="card-tag" id="daylightHoursText">-- daylight</span>
                     </div>
 
                     <div class="sun-arc-visualizer">
@@ -365,14 +368,14 @@
                                 <i class="fa-solid fa-sunrise sun-time-icon rise"></i>
                                 <div>
                                     <span class="sun-time-label">Sunrise</span>
-                                    <span class="sun-time-val" id="sunriseTime">06:12 AM</span>
+                                    <span class="sun-time-val" id="sunriseTime">--:--</span>
                                 </div>
                             </div>
                             <div class="sun-time-box">
                                 <i class="fa-solid fa-sunset sun-time-icon set"></i>
                                 <div>
                                     <span class="sun-time-label">Sunset</span>
-                                    <span class="sun-time-val" id="sunsetTime">06:27 PM</span>
+                                    <span class="sun-time-val" id="sunsetTime">--:--</span>
                                 </div>
                             </div>
                         </div>
@@ -434,14 +437,17 @@
             </div>
         </div>
 
-        <!-- Saved Cities Drawer / Modal -->
+        <!-- Saved Cities Drawer / Bottom Sheet Modal -->
         <div class="favorites-drawer" id="favoritesDrawer">
+            <div class="drawer-handle-bar">
+                <div class="drawer-handle" id="drawerHandle"></div>
+            </div>
             <div class="drawer-header">
                 <div class="drawer-title-row">
                     <i class="fa-solid fa-bookmark"></i>
                     <h3>Saved Favorite Cities</h3>
                 </div>
-                <button class="drawer-close-btn" id="closeDrawerBtn">
+                <button class="drawer-close-btn" id="closeDrawerBtn" aria-label="Close saved cities">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -468,6 +474,41 @@
         </footer>
 
     </div>
+
+    <!-- Mobile App Bottom Navigation Dock (Visible on Mobile) -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Navigation">
+        <button class="mobile-nav-btn active" data-target="heroCard" id="navBtnToday">
+            <div class="mobile-nav-icon-wrap">
+                <i class="fa-solid fa-cloud-sun"></i>
+            </div>
+            <span>Today</span>
+        </button>
+        <button class="mobile-nav-btn" data-target="hourlySection" id="navBtnHourly">
+            <div class="mobile-nav-icon-wrap">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <span>Hourly</span>
+        </button>
+        <button class="mobile-nav-btn" data-target="forecastSection" id="navBtnForecast">
+            <div class="mobile-nav-icon-wrap">
+                <i class="fa-solid fa-calendar-week"></i>
+            </div>
+            <span>5-Day</span>
+        </button>
+        <button class="mobile-nav-btn" data-target="metricsSection" id="navBtnMetrics">
+            <div class="mobile-nav-icon-wrap">
+                <i class="fa-solid fa-shield-heart"></i>
+            </div>
+            <span>Details</span>
+        </button>
+        <button class="mobile-nav-btn" id="navBtnFavorites">
+            <div class="mobile-nav-icon-wrap">
+                <i class="fa-solid fa-bookmark"></i>
+                <span class="mobile-nav-badge" id="mobileNavFavBadge">0</span>
+            </div>
+            <span>Saved</span>
+        </button>
+    </nav>
 
     <!-- Scripts -->
     <script src="app.js"></script>

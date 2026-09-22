@@ -11,6 +11,7 @@
 
 ## ✨ Features & Highlights
 
+- 📱 **Native Mobile App UI & Responsiveness**: Mobile-first glassmorphic interface with fixed/floating bottom navigation dock (Today, Hourly, 5-Day, Details, Saved), iOS-style bottom sheet modal for saved cities, touch swipe gestures, and smooth scrollspy active tab tracking.
 - 🎨 **Apple-Grade Glassmorphism UI**: Dynamic ambient theme glows that seamlessly adapt to live atmospheric conditions (Sunny Amber, Rainy Azure, Stormy Violet, Snowy Frost, Night Indigo, Cloudy Slate).
 - 🌧️ **Interactive Particle Canvas Engine**: Real-time canvas physics rendering drifting snow, raindrop streaks, thunderstorm lightning flashes, and twinkling starfields.
 - 🎯 **High-Precision Meteorological Accuracy**: Zero false rain reports — uses satellite radar models with exact precipitation verification, accurate WMO weather code mapping, and global geolocation.
@@ -24,7 +25,7 @@
 - 🔍 **Live Search Autocomplete**: Instant city suggestion dropdown with support for global and local cities.
 - 📍 **GPS Geolocation**: 1-click current location weather detection.
 - 🔄 **Unit Converter**: Instant toggle between Celsius ($°C$) and Fahrenheit ($°F$).
-- 📌 **Saved Favorite Cities**: Bookmark cities with `localStorage` persistence and slide-out side drawer.
+- 📌 **Saved Favorite Cities**: Bookmark cities with `localStorage` persistence and swipeable bottom sheet drawer.
 - 🎧 **Ambient Audio Synthesizer**: Procedural soothing rain & wind noise generator built with the Web Audio API.
 
 ---
