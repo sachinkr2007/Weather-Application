@@ -1,6 +1,7 @@
 # Atmosphere — Next-Gen Weather Intelligence Dashboard ⛅⚡
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen.svg?style=for-the-badge)](https://sachin-web-portfolio.netlify.app/)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen.svg?style=for-the-badge)](https://sachinkr2007.github.io/Weather-Application/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-Sachin%20Kumar-orange.svg?style=for-the-badge)](https://sachin-web-portfolio.netlify.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 [![Vanilla JS](https://img.shields.io/badge/JavaScript-ES6+-yellow.svg?style=for-the-badge)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Glassmorphism](https://img.shields.io/badge/UI-Glassmorphism-9cf.svg?style=for-the-badge)](https://developer.mozilla.org/en-US/docs/Web/CSS)
