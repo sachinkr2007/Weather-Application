@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional Real-Time Weather Forecast & Dashboard with Hourly Trends, 5-Day Forecast, Air Quality Index, UV Index, and Dynamic Weather Effects.">
+    <title>Atmosphere | Next-Gen Weather Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-cloudy">
+    <!-- Dynamic Canvas Weather Background Animation -->
+    <canvas id="weatherCanvas"></canvas>
+    <div class="ambient-glow" id="ambientGlow"></div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        
+        <!-- Top Navigation & Controls Bar -->
+        <header class="top-nav">
+            <div class="brand-section">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-cloud-bolt brand-icon"></i>
+                </div>
+                <div class="brand-info">
+                    <h1 class="brand-title">Atmosphere</h1>
+                    <span class="brand-subtitle">Live Weather Intelligence</span>
+                </div>
+            </div>
+
+            <!-- Search Area with Autocomplete -->
+            <div class="search-wrapper">
+                <div class="search-bar" id="searchBar">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="cityInput" class="search-input" placeholder="Search city or location..." autocomplete="off" spellcheck="false">
+                    <button class="clear-btn" id="clearSearchBtn" title="Clear search" style="display: none;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <button class="search-action-btn" id="searchSubmitBtn" title="Search">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <!-- Autocomplete Dropdown -->
+                <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
+
+            <!-- Quick Action Controls -->
+            <div class="nav-actions">
+                <button class="icon-btn" id="geoBtn" title="Use My Current Location">
+                    <i class="fa-solid fa-location-crosshairs"></i>
+                    <span class="btn-tooltip">Current GPS</span>
+                </button>
+                
+                <div class="unit-toggle" id="unitToggle" title="Toggle Metric / Imperial">
+                    <button class="unit-btn active" data-unit="metric">°C</button>
+                    <button class="unit-btn" data-unit="imperial">°F</button>
+                </div>
+
+                <button class="icon-btn" id="favoritesDrawerBtn" title="Saved Cities">
+                    <i class="fa-solid fa-bookmark"></i>
+                    <span class="favorite-badge" id="favoriteCount">0</span>
+                    <span class="btn-tooltip">Saved Cities</span>
+                </button>
+
+                <button class="icon-btn" id="soundToggleBtn" title="Toggle Weather Audio Ambience">
+                    <i class="fa-solid fa-volume-xmark" id="soundIcon"></i>
+                    <span class="btn-tooltip">Ambient Audio</span>
+                </button>
+
+                <button class="icon-btn" id="refreshBtn" title="Refresh Weather Data">
+                    <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
+                    <span class="btn-tooltip">Refresh</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Quick Access City Chips -->
+        <div class="quick-cities-container">
+            <span class="quick-cities-label"><i class="fa-solid fa-fire-flame-curved"></i> Popular:</span>
+            <div class="quick-cities-list" id="quickCitiesList">
+                <button class="city-chip" data-city="New Delhi">New Delhi</button>
+                <button class="city-chip" data-city="Mumbai">Mumbai</button>
+                <button class="city-chip" data-city="Bengaluru">Bengaluru</button>
+                <button class="city-chip" data-city="London">London</button>
+                <button class="city-chip" data-city="New York">New York</button>
+                <button class="city-chip" data-city="Tokyo">Tokyo</button>
+                <button class="city-chip" data-city="Dubai">Dubai</button>
+                <button class="city-chip" data-city="Paris">Paris</button>
+                <button class="city-chip" data-city="Sydney">Sydney</button>
+            </div>
+        </div>
+
+        <!-- Alert / Notification Toast -->
+        <div class="toast-container" id="toastContainer"></div>
+
+        <!-- Main Weather Dashboard Grid -->
+        <main class="dashboard-grid" id="dashboardContent">
+            
+            <!-- Left Column: Hero Current Weather & Highlights -->
+            <section class="grid-left-col">
+                
+                <!-- Main Hero Weather Card -->
+                <div class="glass-card hero-weather-card" id="heroCard">
+                    <div class="hero-top-row">
+                        <div class="location-header">
+                            <div class="location-title-row">
+                                <i class="fa-solid fa-location-dot location-pin"></i>
+                                <h2 class="city-name" id="cityName">New Delhi</h2>
+                                <span class="country-tag" id="countryTag">IN</span>
+                                <button class="fav-toggle-btn" id="toggleFavoriteCityBtn" title="Pin / Save this city">
+                                    <i class="fa-regular fa-star" id="favoriteStarIcon"></i>
+                                </button>
+                            </div>
+                            <p class="current-datetime" id="currentDateTime">Tuesday, 22 Sep 2026 • 16:30</p>
+                        </div>
+                        <div class="weather-condition-pill" id="weatherPill">
+                            <span class="pulse-dot"></span>
+                            <span id="conditionText">Sunny Clear</span>
+                        </div>
+                    </div>
+
+                    <div class="hero-main-row">
+                        <div class="temp-display-wrap">
+                            <div class="main-temp-val" id="mainTemp">28°</div>
+                            <div class="temp-sub-info">
+                                <span class="feels-like" id="feelsLike">Feels like 30°</span>
+                                <div class="high-low-range">
+                                    <span class="high-temp"><i class="fa-solid fa-arrow-up"></i> <span id="highTemp">32°</span></span>
+                                    <span class="low-temp"><i class="fa-solid fa-arrow-down"></i> <span id="lowTemp">23°</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="weather-visual-wrap">
+                            <div class="weather-3d-icon-box" id="heroWeatherIconBox">
+                                <i class="fa-solid fa-sun weather-hero-icon" id="heroWeatherIcon"></i>
+                            </div>
+                            <span class="condition-description" id="weatherDescription">Scattered Clouds</span>
+                        </div>
+                    </div>
+
+                    <!-- Hero Quick Stats Ribbon -->
+                    <div class="hero-ribbon">
+                        <div class="ribbon-item">
+                            <i class="fa-solid fa-droplet"></i>
+                            <div>
+                                <span class="ribbon-label">Humidity</span>
+                                <span class="ribbon-val" id="ribbonHumidity">58%</span>
+                            </div>
+                        </div>
+                        <div class="ribbon-divider"></div>
+                        <div class="ribbon-item">
+                            <i class="fa-solid fa-wind"></i>
+                            <div>
+                                <span class="ribbon-label">Wind</span>
+                                <span class="ribbon-val" id="ribbonWind">14 km/h</span>
+                            </div>
+                        </div>
+                        <div class="ribbon-divider"></div>
+                        <div class="ribbon-item">
+                            <i class="fa-solid fa-eye"></i>
+                            <div>
+                                <span class="ribbon-label">Visibility</span>
+                                <span class="ribbon-val" id="ribbonVisibility">10 km</span>
+                            </div>
+                        </div>
+                        <div class="ribbon-divider"></div>
+                        <div class="ribbon-item">
+                            <i class="fa-solid fa-gauge-high"></i>
+                            <div>
+                                <span class="ribbon-label">Pressure</span>
+                                <span class="ribbon-val" id="ribbonPressure">1012 hPa</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Smart Weather Advice Banner -->
+                    <div class="weather-smart-banner" id="smartAdviceBanner">
+                        <i class="fa-solid fa-wand-magic-sparkles banner-sparkle"></i>
+                        <span id="smartAdviceText">Clear skies ahead! Ideal conditions for outdoor activities and travel.</span>
+                    </div>
+                </div>
+
+                <!-- 24-Hour Hourly Forecast with Interactive Canvas Curve Chart -->
+                <div class="glass-card hourly-forecast-card">
+                    <div class="card-header">
+                        <div class="header-title-box">
+                            <i class="fa-solid fa-clock-rotate-left header-icon"></i>
+                            <h3 class="card-title">Hourly Forecast & Temperature Trend</h3>
+                        </div>
+                        <div class="chart-legend">
+                            <span class="legend-dot temp-dot"></span> Temperature
+                            <span class="legend-dot rain-dot"></span> Precip %
+                        </div>
+                    </div>
+
+                    <!-- Canvas Temperature Curve Chart -->
+                    <div class="chart-wrapper">
+                        <canvas id="hourlyTrendCanvas" height="110"></canvas>
+                    </div>
+
+                    <!-- Hourly Cards Horizontal Scroll -->
+                    <div class="hourly-cards-scroll" id="hourlyCardsScroll">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- 5-Day Extended Weather Forecast -->
+                <div class="glass-card extended-forecast-card">
+                    <div class="card-header">
+                        <div class="header-title-box">
+                            <i class="fa-solid fa-calendar-week header-icon"></i>
+                            <h3 class="card-title">5-Day Future Forecast</h3>
+                        </div>
+                        <span class="card-tag">Extended Outlook</span>
+                    </div>
+
+                    <div class="daily-forecast-list" id="dailyForecastList">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Right Column: In-Depth Weather Intelligence Grid -->
+            <section class="grid-right-col">
+                
+                <!-- Air Quality Index (AQI) Card -->
+                <div class="glass-card metric-card aqi-card">
+                    <div class="card-header">
+                        <div class="header-title-box">
+                            <i class="fa-solid fa-leaf header-icon aqi-icon"></i>
+                            <h3 class="card-title">Air Quality Index</h3>
+                        </div>
+                        <span class="status-pill status-good" id="aqiPill">Good (AQI 2)</span>
+                    </div>
+
+                    <div class="aqi-meter-wrap">
+                        <div class="aqi-score-box">
+                            <span class="aqi-val" id="aqiNumber">42</span>
+                            <span class="aqi-scale">/ 500</span>
+                        </div>
+                        <div class="aqi-bar-track">
+                            <div class="aqi-bar-fill" id="aqiBarFill" style="width: 25%;"></div>
+                        </div>
+                        <p class="aqi-health-advice" id="aqiAdvice">Air quality is satisfactory; air pollution poses little or no risk.</p>
+                    </div>
+
+                    <div class="pollutants-grid">
+                        <div class="pollutant-item">
+                            <span class="pol-name">PM2.5</span>
+                            <span class="pol-val" id="pm25Val">12.4 <small>µg/m³</small></span>
+                        </div>
+                        <div class="pollutant-item">
+                            <span class="pol-name">PM10</span>
+                            <span class="pol-val" id="pm10Val">24.1 <small>µg/m³</small></span>
+                        </div>
+                        <div class="pollutant-item">
+                            <span class="pol-name">NO₂</span>
+                            <span class="pol-val" id="no2Val">8.5 <small>µg/m³</small></span>
+                        </div>
+                        <div class="pollutant-item">
+                            <span class="pol-name">O₃</span>
+                            <span class="pol-val" id="o3Val">35.2 <small>µg/m³</small></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UV Index & Sun Protection Card -->
+                <div class="glass-card metric-card uv-card">
+                    <div class="card-header">
+                        <div class="header-title-box">
+                            <i class="fa-solid fa-sun-plant-wilt header-icon uv-icon"></i>
+                            <h3 class="card-title">UV Index</h3>
+                        </div>
+                        <span class="status-pill status-moderate" id="uvPill">Moderate</span>
+                    </div>
+
+                    <div class="uv-gauge-wrap">
+                        <div class="uv-score-display">
+                            <span class="uv-number" id="uvNumber">4.8</span>
+                            <span class="uv-max">UV Max: 6.2</span>
+                        </div>
+                        <div class="uv-gradient-bar">
+                            <div class="uv-pin" id="uvPin" style="left: 45%;"></div>
+                        </div>
+                        <p class="uv-recommendation" id="uvAdvice"><i class="fa-solid fa-glasses"></i> Wear sunglasses on bright days. Use SPF 30+ if outside.</p>
+                    </div>
+                </div>
+
+                <!-- Wind Dynamics & Direction Compass Card -->
+                <div class="glass-card metric-card wind-card">
+                    <div class="card-header">
+                        <div class="header-title-box">
+                            <i class="fa-solid fa-compass-drafting header-icon"></i>
+                            <h3 class="card-title">Wind & Direction</h3>
+                        </div>
+                        <span class="status-pill" id="windBeaufortPill">Gentle Breeze</span>
+                    </div>
+
+                    <div class="wind-content-wrap">
+                        <div class="compass-visual-box">
+                            <div class="compass-dial">
+                                <span class="compass-marker marker-n">N</span>
+                                <span class="compass-marker marker-e">E</span>
+                                <span class="compass-marker marker-s">S</span>
+                                <span class="compass-marker marker-w">W</span>
+                                <div class="compass-arrow-wrap" id="compassArrowWrap">
+                                    <div class="compass-arrow-needle"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wind-info-text">
+                            <div class="wind-speed-large" id="windSpeedBig">14 <small>km/h</small></div>
+                            <div class="wind-detail-row">
+                                <span>Direction:</span>
+                                <strong id="windDirectionText">North-East (45°)</strong>
+                            </div>
+                            <div class="wind-detail-row">
+                                <span>Wind Gusts:</span>
+                                <strong id="windGustText">Up to 22 km/h</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solar Cycle: Sunrise & Sunset Arc Card -->
+                <div class="glass-card metric-card sun-cycle-card">
+                    <div class="card-header">
+                        <div class="header-title-box">
+                            <i class="fa-solid fa-sun-horizon header-icon sun-icon"></i>
+                            <h3 class="card-title">Sun Cycle</h3>
+                        </div>
+                        <span class="card-tag" id="daylightHoursText">12h 15m daylight</span>
+                    </div>
+
+                    <div class="sun-arc-visualizer">
+                        <svg class="sun-arc-svg" viewBox="0 0 240 100">
+                            <!-- Background Arc Path -->
+                            <path d="M 20 85 A 100 70 0 0 1 220 85" fill="none" stroke="rgba(255,255,255,0.15)" stroke-dasharray="4 4" stroke-width="2"/>
+                            <!-- Active Golden Path -->
+                            <path id="sunActiveArc" d="M 20 85 A 100 70 0 0 1 120 15" fill="none" stroke="url(#sunArcGrad)" stroke-width="3"/>
+                            <!-- Sun Dot -->
+                            <circle id="sunDot" cx="120" cy="15" r="7" fill="#fbbf24" filter="drop-shadow(0 0 8px #fbbf24)"/>
+                            <!-- Ground Line -->
+                            <line x1="10" y1="85" x2="230" y2="85" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+                            <defs>
+                                <linearGradient id="sunArcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#f59e0b"/>
+                                    <stop offset="100%" stop-color="#fbbf24"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="sun-times-row">
+                            <div class="sun-time-box">
+                                <i class="fa-solid fa-sunrise sun-time-icon rise"></i>
+                                <div>
+                                    <span class="sun-time-label">Sunrise</span>
+                                    <span class="sun-time-val" id="sunriseTime">06:12 AM</span>
+                                </div>
+                            </div>
+                            <div class="sun-time-box">
+                                <i class="fa-solid fa-sunset sun-time-icon set"></i>
+                                <div>
+                                    <span class="sun-time-label">Sunset</span>
+                                    <span class="sun-time-val" id="sunsetTime">06:27 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lifestyle & Activity Recommendations -->
+                <div class="glass-card lifestyle-card">
+                    <div class="card-header">
+                        <div class="header-title-box">
+                            <i class="fa-solid fa-person-running header-icon lifestyle-icon"></i>
+                            <h3 class="card-title">Lifestyle & Outdoor Index</h3>
+                        </div>
+                    </div>
+
+                    <div class="lifestyle-grid">
+                        <div class="lifestyle-tile" id="tileOutdoor">
+                            <div class="tile-icon-box icon-green"><i class="fa-solid fa-person-walking"></i></div>
+                            <div class="tile-details">
+                                <span class="tile-title">Outdoor Running</span>
+                                <span class="tile-badge badge-great" id="outdoorBadge">Excellent</span>
+                            </div>
+                        </div>
+                        <div class="lifestyle-tile" id="tileUmbrella">
+                            <div class="tile-icon-box icon-blue"><i class="fa-solid fa-umbrella"></i></div>
+                            <div class="tile-details">
+                                <span class="tile-title">Umbrella Need</span>
+                                <span class="tile-badge badge-not-needed" id="umbrellaBadge">Not Needed</span>
+                            </div>
+                        </div>
+                        <div class="lifestyle-tile" id="tileDriving">
+                            <div class="tile-icon-box icon-purple"><i class="fa-solid fa-car"></i></div>
+                            <div class="tile-details">
+                                <span class="tile-title">Driving Visibility</span>
+                                <span class="tile-badge badge-great" id="drivingBadge">Clear Road</span>
+                            </div>
+                        </div>
+                        <div class="lifestyle-tile" id="tileAllergy">
+                            <div class="tile-icon-box icon-orange"><i class="fa-solid fa-shield-virus"></i></div>
+                            <div class="tile-details">
+                                <span class="tile-title">Pollen & Allergy</span>
+                                <span class="tile-badge badge-moderate" id="allergyBadge">Low Risk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- Loading Skeleton Overlay (Hidden after load) -->
+        <div class="skeleton-overlay" id="loadingSkeleton" style="display: none;">
+            <div class="loader-spinner-box">
+                <div class="weather-pulse-loader">
+                    <i class="fa-solid fa-cloud-sun"></i>
+                </div>
+                <p class="loader-text" id="loaderText">Fetching meteorological data...</p>
+            </div>
+        </div>
+
+        <!-- Saved Cities Drawer / Modal -->
+        <div class="favorites-drawer" id="favoritesDrawer">
+            <div class="drawer-header">
+                <div class="drawer-title-row">
+                    <i class="fa-solid fa-bookmark"></i>
+                    <h3>Saved Favorite Cities</h3>
+                </div>
+                <button class="drawer-close-btn" id="closeDrawerBtn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="drawer-content" id="favoritesList">
+                <div class="empty-fav-state">
+                    <i class="fa-regular fa-star"></i>
+                    <p>No favorite cities saved yet. Search and click the star icon to pin your favorite cities here!</p>
+                </div>
+            </div>
+        </div>
+        <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p class="footer-dev">
+                    Design and Developed by 
+                    <a href="https://sachin-web-portfolio.netlify.app/" target="_blank" rel="noopener noreferrer" class="portfolio-link" id="portfolioLink" title="View Sachin Kumar's Portfolio">
+                        Sachin Kumar
+                    </a>
+                </p>
+                <p class="footer-credits">Atmosphere Weather Intelligence • High-Resolution Meteorologic Satellite Models</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
